@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: hearts-server
+    runtime: node
+    plan: free
+    buildCommand: npm ci
+    startCommand: npm run server:start
+    healthCheckPath: /health
+    autoDeployTrigger: commit
+    envVars:
+      - key: HOST
+        value: 0.0.0.0
+      - key: CLIENT_ORIGINS
+        value: https://hearts-zach-shirley.vercel.app
