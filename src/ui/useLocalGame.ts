@@ -107,7 +107,8 @@ export function useLocalGame(settings: SoloSettings, resume: boolean, onExit: ()
     play: (card: Card) => update((s) => playCard(s, 0, card)),
     moon: (choice) => update((s) => chooseMoon(s, 0, choice)),
     ready: () => update((s) => (s.phase === "handOver" ? nextHand(s) : s)),
-    newGame: () => setGame({ state: createGame(settings.rules, randomSeed()), difficulty: settings.difficulty }),
+    // A new game keeps this game's rules and difficulty.
+    newGame: () => setGame((g) => ({ state: createGame(g.state.rules, randomSeed()), difficulty: g.difficulty })),
     leave: onExit
   };
 }

@@ -109,6 +109,7 @@ Browser checks:
 - `node scripts/e2e.mjs solo <url> desktop|phone [difficulty]` plays a full game to the end by clicking cards like a player (random legal choices), and fails on any console error. Run against the live site at desktop size (1366×820, Hard) and phone size (Pixel 7 emulation, Easy).
 - `node scripts/e2e.mjs multi <url>` runs two browsers (desktop host, phone guest) against the deployed server: create a room, join by link, start with two bots, check the two hands are disjoint, play four tricks, refresh the guest and check the seat and hand come back, close the guest, see the reconnect countdown and the bot takeover, and finish the hand with the bot in that seat.
 - Played by hand in a desktop browser and at phone width: passing, trick animations, illegal-card hints, last trick, scoreboard, hand summary, two-tab rooms, refresh and takeover.
+- An exploratory pass by a separate AI tester on the live site (J♦ and moon-choice rules on, target 50): hand totals, scoreboard, trick log, last trick, resume after reload and the rules text all checked out; its UX findings (passing a fourth card, restart without confirmation, phone layout details) were fixed.
 
 Never tested: a physical phone or tablet, Safari or Firefox, how the sound effects actually sound on different devices, real groups of people playing online, and many simultaneous rooms on the free server.
 
@@ -120,6 +121,7 @@ Never tested: a physical phone or tablet, Safari or Firefox, how the sound effec
 - When a disconnected player's turn comes up, the table waits for their 30-second grace period before the bot plays.
 - Hard runs on the main thread in solo play. It takes tens of milliseconds per move on a laptop; a slow phone may pause briefly.
 - The Normal bot defends badly against the moon.
+- At phone width all 13 cards fit in one row, so each card shows only a narrow strip until the hand thins out.
 
 ## Story
 

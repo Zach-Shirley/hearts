@@ -13,6 +13,7 @@ import { clearSoloGame, savedSoloGame, useLocalGame, type SoloSettings } from ".
 type Screen = { name: "home" } | { name: "solo"; resume: boolean } | { name: "online"; code?: string };
 
 const SETTINGS_KEY = "hearts.settings";
+const SOLO_FLAG = "hearts.inSolo";
 const DEFAULT_SETTINGS: SoloSettings = { difficulty: "normal", rules: DEFAULT_RULES, playerName: "", pace: 1 };
 
 function loadSettings(): SoloSettings {
@@ -29,6 +30,8 @@ function initialScreen(): Screen {
   const code = normalizeCode(new URLSearchParams(window.location.search).get("room"));
   if (code) return { name: "online", code };
   if (storedSession()) return { name: "online" };
+  // A refresh during a solo game goes straight back to the table.
+  if (sessionStorage.getItem(SOLO_FLAG) === "1" && savedSoloGame()) return { name: "solo", resume: true };
   return { name: "home" };
 }
 
@@ -37,6 +40,13 @@ export default function App() {
   const [settings, setSettings] = useState<SoloSettings>(loadSettings);
   const [showRules, setShowRules] = useState(false);
   useEffect(() => save(SETTINGS_KEY, settings), [settings]);
+  useEffect(() => {
+    try {
+      sessionStorage.setItem(SOLO_FLAG, screen.name === "solo" ? "1" : "0");
+    } catch {
+      /* storage unavailable */
+    }
+  }, [screen.name]);
 
   const goHome = () => {
     window.history.replaceState(null, "", window.location.pathname);
@@ -202,23 +212,46 @@ function RulesDialog({ onClose }: { onClose: () => void }) {
 function SoloGame({ settings, resume, onExit }: { settings: SoloSettings; resume: boolean; onExit: () => void }) {
   const model = useLocalGame(settings, resume, onExit);
   const [menu, setMenu] = useState(false);
+  const [confirmRestart, setConfirmRestart] = useState(false);
+  const r = model.view.rules;
+  const rulesText = [
+    `game to ${r.targetScore}`,
+    r.moon === "choose" ? "moon: shooter chooses" : "moon: +26 to others",
+    r.jackOfDiamonds ? "J♦ −10" : null,
+    r.queenBreaksHearts ? "Q♠ breaks hearts" : "Q♠ doesn't break hearts"
+  ].filter(Boolean).join(" · ");
   return (
     <>
       <Table model={model} onMenu={() => setMenu(true)} />
       {menu && (
-        <Dialog title="Menu" onClose={() => setMenu(false)}>
-          <p className="muted">Bots: {model.difficulty}. Your game is saved in this browser.</p>
+        <Dialog
+          title="Menu"
+          onClose={() => {
+            setMenu(false);
+            setConfirmRestart(false);
+          }}
+        >
+          <p className="muted">
+            Bots: {model.difficulty}. Rules: {rulesText}. Your game is saved in this browser.
+          </p>
           <div className="dialog-actions column">
             <button className="secondary-btn" onClick={() => setMenu(false)}>Keep playing</button>
-            <button
-              className="secondary-btn"
-              onClick={() => {
-                model.newGame();
-                setMenu(false);
-              }}
-            >
-              Restart with current settings
-            </button>
+            {confirmRestart ? (
+              <button
+                className="secondary-btn danger"
+                onClick={() => {
+                  model.newGame();
+                  setMenu(false);
+                  setConfirmRestart(false);
+                }}
+              >
+                Yes, throw this game away and restart
+              </button>
+            ) : (
+              <button className="secondary-btn" onClick={() => setConfirmRestart(true)}>
+                Restart (same rules)
+              </button>
+            )}
             <button className="primary-btn" onClick={onExit}>Main menu</button>
           </div>
         </Dialog>

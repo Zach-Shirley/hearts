@@ -85,7 +85,7 @@ export function Table({ model, onMenu }: { model: TableModel; onMenu: () => void
     }
     if (before.phase === "passing" && view.phase !== "passing" && view.received.length) {
       setFreshCards(view.received);
-      setTimeout(() => setFreshCards([]), 4200);
+      setTimeout(() => setFreshCards([]), 6000);
       setSelected([]);
     }
     if (view.phase === "playing" && view.turn === you && (before.turn !== you || before.phase !== "playing")) {
@@ -143,7 +143,12 @@ export function Table({ model, onMenu }: { model: TableModel; onMenu: () => void
 
   function onCardClick(card: Card) {
     if (passing) {
-      setSelected((sel) => (sel.includes(card) ? sel.filter((c) => c !== card) : sel.length < 3 ? [...sel, card] : [...sel.slice(1), card]));
+      if (!selected.includes(card) && selected.length >= 3) {
+        setHint("Three cards are already chosen. Tap one to put it back first.");
+        sfx.error();
+        return;
+      }
+      setSelected((sel) => (sel.includes(card) ? sel.filter((c) => c !== card) : sel.length < 3 ? [...sel, card] : sel));
       sfx.select();
       return;
     }
@@ -336,7 +341,7 @@ function SeatPlate(props: {
         <div className="plate-name">{props.name}{props.passed && <span className="plate-tag">passed</span>}</div>
         <div className="plate-score">
           <strong>{props.score}</strong>
-          {props.handPoints !== 0 && <span className="plate-hand">{props.handPoints > 0 ? "+" : ""}{props.handPoints} this hand</span>}
+          {props.handPoints !== 0 && <span className="plate-hand">{props.handPoints > 0 ? "+" : ""}{props.handPoints}<span className="long"> this hand</span></span>}
         </div>
         {props.note && <div className="plate-note">{props.note}</div>}
       </div>

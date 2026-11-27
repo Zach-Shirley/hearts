@@ -1,4 +1,5 @@
 import { useEffect, type ReactNode } from "react";
+import { JACK_OF_DIAMONDS } from "../engine/cards";
 import type { CompletedTrick, Seat } from "../engine/game";
 import type { PlayerView } from "../engine/view";
 import { PlayingCard, SuitIcon } from "./Card";
@@ -177,7 +178,11 @@ export function HandSummaryDialog({ model, now }: { model: TableModel; now: numb
         <tbody>
           {order.map((s) => (
             <tr key={s} className={s === you ? "is-you" : ""}>
-              <td>{seats[s].name}{seats[s].ready ? " ✓" : ""}</td>
+              <td>
+                {seats[s].name}
+                {seats[s].ready ? " ✓" : ""}
+                {view.rules.jackOfDiamonds && view.taken[s].includes(JACK_OF_DIAMONDS) && <span className="jack-tag">took J♦ −10</span>}
+              </td>
               <td className={h.scored[s] > 0 ? "pts-bad" : h.scored[s] < 0 ? "pts-good" : ""}>{fmt(h.scored[s])}</td>
               <td><strong>{view.scores[s]}</strong></td>
             </tr>
