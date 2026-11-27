@@ -1,0 +1,33 @@
+{
+  "name": "hearts",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1 --port 4290 --strictPort",
+    "dev:multiplayer": "concurrently --kill-others --names SERVER,WEB \"npm:server:dev\" \"npm:dev\"",
+    "server:dev": "tsx watch server/server.ts",
+    "server:start": "tsx server/server.ts",
+    "build": "tsc && vite build",
+    "preview": "vite preview --host 127.0.0.1 --port 4290 --strictPort",
+    "test": "vitest run",
+    "sim": "tsx scripts/sim.ts"
+  },
+  "dependencies": {
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "socket.io": "^4.8.3",
+    "socket.io-client": "^4.8.3",
+    "tsx": "^4.23.12"
+  },
+  "devDependencies": {
+    "@types/node": "^26.2.0",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.3",
+    "concurrently": "^10.0.4",
+    "typescript": "^6.0.3",
+    "vite": "^8.1.0",
+    "vitest": "^4.1.9"
+  }
+}
