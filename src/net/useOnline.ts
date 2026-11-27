@@ -5,7 +5,7 @@ import type { Card } from "../engine/cards";
 import type { HouseRules } from "../engine/game";
 import type { AckResult, ClientToServerEvents, PlayerSession, RoomConnection, RoomSnapshot, ServerToClientEvents } from "./protocol";
 
-export const PRODUCTION_SERVER_URL = "https://hearts-server-e6vz.onrender.com";
+export const PRODUCTION_SERVER_URL = "https://hearts-server-jzus.onrender.com";
 
 const isLocal = typeof window !== "undefined" && ["localhost", "127.0.0.1"].includes(window.location.hostname);
 export const SERVER_URL: string = import.meta.env.VITE_SERVER_URL ?? (isLocal ? "http://127.0.0.1:4291" : PRODUCTION_SERVER_URL);
