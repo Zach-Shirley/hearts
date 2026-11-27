@@ -159,9 +159,10 @@ export function Table({ model, onMenu }: { model: TableModel; onMenu: () => void
 
   function status(): string {
     if (view.phase === "passing") {
-      if (!view.myPass) return `Choose 3 cards to pass ${PASS_WORD[view.passDirection]} to ${seats[passTarget(you, view.passDirection)].name}.`;
+      if (!view.myPass) return `Pass 3 cards ${PASS_WORD[view.passDirection]} to ${seats[passTarget(you, view.passDirection)].name}.`;
       const waiting = seats.filter((_, s) => !view.passReady[s]).map((s) => s.name);
-      return waiting.length ? `Waiting for ${waiting.join(", ")} to pass…` : "Passing…";
+      const mine = `You passed ${view.myPass.map(cardLabel).join(" ")}.`;
+      return waiting.length ? `${mine} Waiting for ${waiting.join(", ")}…` : mine;
     }
     if (view.phase === "playing") {
       if (busy) return `${seats[hold!.trick.winner].kind === "you" ? "You take" : `${seats[hold!.trick.winner].name} takes`} the trick${hold!.trick.points ? ` (${hold!.trick.points > 0 ? "+" : ""}${hold!.trick.points})` : ""}.`;
@@ -268,19 +269,16 @@ export function Table({ model, onMenu }: { model: TableModel; onMenu: () => void
         </div>
 
         <div className="status-line" role="status">
-          <span>{hint ?? status()}</span>
-        </div>
-      </main>
-
-      <footer className={`me ${canPlay ? "is-turn" : ""}`}>
-        <div className="me-bar">
           {passing && (
             <button className="primary-btn pass-btn" disabled={selected.length !== 3} onClick={() => model.pass(selected)}>
               {selected.length === 3 ? `Pass ${PASS_WORD[view.passDirection]} →` : `Select ${3 - selected.length} more`}
             </button>
           )}
-          {view.phase === "passing" && view.myPass && <span className="me-note">Passed: {view.myPass.map(cardLabel).join(" ")}</span>}
+          <span>{hint ?? status()}</span>
         </div>
+      </main>
+
+      <footer className={`me ${canPlay ? "is-turn" : ""}`}>
         <div className={`hand ${dealing ? "is-dealing" : ""}`} style={{ "--n": n } as React.CSSProperties} key={handKey}>
           {view.hand.map((card, i) => {
             const playable = canPlay && view.legal.includes(card);

@@ -26,6 +26,7 @@
   --card-w: clamp(56px, min(8.6vw, 12.5vh), 108px);
   --card-h: calc(var(--card-w) * 1.4);
   --opp-w: calc(var(--card-w) * 0.46);
+  --trick-w: var(--card-w);
   --radius: 18px;
   --font-ui: "Inter Variable", system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-display: "Fraunces Variable", Georgia, "Times New Roman", serif;
@@ -444,24 +445,25 @@ button:disabled {
 }
 .trick-card {
   position: absolute;
-  left: calc(var(--card-w) * -0.5);
-  top: calc(var(--card-h) * -0.5);
+  width: var(--trick-w);
+  left: calc(var(--trick-w) * -0.5);
+  top: calc(var(--trick-w) * -0.7);
   transition: translate 0.42s cubic-bezier(0.5, 0, 0.75, 0), scale 0.42s ease-in, opacity 0.42s ease-in, filter 0.3s;
 }
 .trick-card.from-bottom {
-  transform: translate(0, calc(var(--card-h) * 0.4)) rotate(2deg);
+  transform: translate(0, calc(var(--trick-w) * 0.56)) rotate(2deg);
   animation: enter-bottom 0.3s cubic-bezier(0.2, 0.8, 0.25, 1);
 }
 .trick-card.from-top {
-  transform: translate(0, calc(var(--card-h) * -0.4)) rotate(-3deg);
+  transform: translate(0, calc(var(--trick-w) * -0.56)) rotate(-3deg);
   animation: enter-top 0.3s cubic-bezier(0.2, 0.8, 0.25, 1);
 }
 .trick-card.from-left {
-  transform: translate(calc(var(--card-w) * -0.74), 0) rotate(-8deg);
+  transform: translate(calc(var(--trick-w) * -0.74), 0) rotate(-8deg);
   animation: enter-left 0.3s cubic-bezier(0.2, 0.8, 0.25, 1);
 }
 .trick-card.from-right {
-  transform: translate(calc(var(--card-w) * 0.74), 0) rotate(7deg);
+  transform: translate(calc(var(--trick-w) * 0.74), 0) rotate(7deg);
   animation: enter-right 0.3s cubic-bezier(0.2, 0.8, 0.25, 1);
 }
 @keyframes enter-bottom {
@@ -500,6 +502,13 @@ button:disabled {
   max-width: calc(100% - 24px);
   z-index: 4;
   pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+.status-line .pass-btn {
+  pointer-events: auto;
 }
 .status-line span {
   display: inline-block;
@@ -522,33 +531,11 @@ button:disabled {
   padding: 0 12px max(14px, env(safe-area-inset-bottom));
   z-index: 4;
 }
-.me-bar {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: calc(100% + 46px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  flex-wrap: wrap;
-  pointer-events: none;
-}
-.me-bar > * {
-  pointer-events: auto;
-}
-.me-bar:empty {
-  display: none;
-}
 .self-plate {
   position: absolute;
   left: 12px;
   bottom: 8px;
   z-index: 4;
-}
-.me-note {
-  color: var(--muted);
-  font-size: 13px;
 }
 .pass-btn {
   min-width: 170px;
@@ -1170,6 +1157,7 @@ button:disabled {
   :root {
     --card-w: clamp(50px, 19vw, 84px);
     --opp-w: 22px;
+    --trick-w: clamp(60px, 23vw, 100px);
   }
   .hide-narrow {
     display: none;
@@ -1230,10 +1218,18 @@ button:disabled {
     top: 50%;
   }
   .trick-card.from-left {
-    transform: translate(calc(var(--card-w) * -0.62), 0) rotate(-8deg);
+    transform: translate(calc(var(--trick-w) * -0.62), 0) rotate(-8deg);
   }
   .trick-card.from-right {
-    transform: translate(calc(var(--card-w) * 0.62), 0) rotate(7deg);
+    transform: translate(calc(var(--trick-w) * 0.62), 0) rotate(7deg);
+  }
+  .plate-name .plate-tag {
+    font-size: 0;
+    padding: 1px 4px;
+  }
+  .plate-name .plate-tag::after {
+    content: "✓";
+    font-size: 11px;
   }
   .card-index {
     font-size: 58px;
@@ -1252,6 +1248,9 @@ button:disabled {
   }
   .self-plate .plate-score {
     font-size: 11px;
+  }
+  .status-line {
+    bottom: 60px;
   }
   .status-line span {
     font-size: 12.5px;
